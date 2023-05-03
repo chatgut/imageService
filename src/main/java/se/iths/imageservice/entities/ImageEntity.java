@@ -18,4 +18,10 @@ public class ImageEntity {
     private String filePath;
     private String type;
 
+    @Override
+    public String toString() {
+        return "ImageEntity{" +
+                "filePath='" + filePath + '\'' +
+                '}';
+    }
 }
