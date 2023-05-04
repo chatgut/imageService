@@ -18,8 +18,8 @@ target/
 *.iws
 *.iml
 *.ipr
-/src/main/resources/application-dev.yml
-*/application-dev.yml
+!**/src/resources/application-dev.yml
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -33,4 +33,4 @@ build/
 ### VS Code ###
 .vscode/
 !/src/main/resources/application-dev.yml
-!/src/main/resources/application-dev.yml
+/src/main/resources/application-dev.yml
