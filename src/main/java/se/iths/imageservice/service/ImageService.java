@@ -13,7 +13,7 @@ import java.nio.file.Path;
 @Service
 public class ImageService {
     private static final String HOME_FOLDER = System.getProperty("user.home");
-    private static final String IMAGE_FOLDER = "/images";
+    private static final String IMAGE_FOLDER = "/imageService/";
     private static final String FOLDER_PATH = HOME_FOLDER + IMAGE_FOLDER;
     ImageRepository repo;
 
@@ -22,7 +22,7 @@ public class ImageService {
     }
 
 
-    public String uploadImage(MultipartFile file) {
+    public Long uploadImage(MultipartFile file) {
         checkIfPathExist();
         ImageEntity entity = repo.save(ImageEntity.builder()
                 .name(file.getOriginalFilename())
@@ -31,12 +31,12 @@ public class ImageService {
                 .build());
 
         try {
-            file.transferTo(new File(FOLDER_PATH + "/" + file.getOriginalFilename()));
+            file.transferTo(new File(FOLDER_PATH + file.getOriginalFilename()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return entity.toString();
+        return entity.getId();
     }
 
     private void checkIfPathExist() {
@@ -53,5 +53,12 @@ public class ImageService {
 
     private static Path getPath() {
         return Path.of(FOLDER_PATH);
+    }
+
+    public String getPath(Long id) {
+        return repo.findById(id)
+                .map(ImageEntity::getFilePath)
+                .orElse(null);
+
     }
 }

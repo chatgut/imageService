@@ -18,9 +18,14 @@ public class ImageController {
 
 
     @PostMapping("/upload")
-    String uploadImage(@RequestParam("image") MultipartFile file) {
+    Long uploadImage(@RequestParam("image") MultipartFile file) {
 
         return imageService.uploadImage(file);
+    }
+
+    @GetMapping("/{id}")
+    String getPath(@RequestParam("id") Long id){
+        return imageService.getPath(id);
     }
 }
 
