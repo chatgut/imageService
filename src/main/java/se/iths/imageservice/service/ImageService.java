@@ -54,6 +54,7 @@ public class ImageService {
         }
     }
 
+
     private static Path getPath() {
         return Path.of(FOLDER_PATH);
     }
