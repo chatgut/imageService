@@ -15,7 +15,7 @@ on:
     branches: [ "main" ]
 
 jobs:
- native-image-compile-on-host:
+  native-image-compile-on-host:
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -33,34 +33,14 @@ jobs:
           --health-timeout=5s
           --health-retries=3
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: graalvm/setup-graalvm@v1
+        with:
+           version: 'latest'
+           java-version: '19'
+           components: 'native-image'
+           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Cache SDKMAN archives & candidates
-      uses: actions/cache@v2
-      with:
-        path: ~/.sdkman
-        key: ${{ runner.os }}-sdkman-${{ hashFiles('pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-sdkman-
-
-    - name: Install GraalVM, Maven, Native Image & Run Maven build
-      run: |
-        echo 'Install GraalVM with SDKMAN'
-        curl -s "https://get.sdkman.io" | bash
-        source "$HOME/.sdkman/bin/sdkman-init.sh"
-        sdk install java 20.2.0.r11-grl
-
-        echo 'Install GraalVM Native Image'
-        gu install native-image
-
-        echo 'Install Maven, that uses GraalVM for later builds'
-        source "$HOME/.sdkman/bin/sdkman-init.sh"
-        sdk install maven
-
-        echo 'Run GraalVM Native Image compilation of Spring Boot App (Maven version instead of ./compile.sh)'
-        mvn -B clean package -P native --no-transfer-progress
-        
-        
-    - name: build with Maven
-      run: mvn -B package --file pom.xml
+      - name: build with Maven
+        run: mvn -B package --file pom.xml
     
