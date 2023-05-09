@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import se.iths.imageservice.service.ImageService;
 
-@RestController("/imageService")
+@RestController("/images")
 public class ImageController {
 
     ImageService imageService;
@@ -18,7 +18,7 @@ public class ImageController {
     }
 
 
-    @PostMapping("/upload")
+    @PostMapping()
     String uploadImage(@RequestParam("image") MultipartFile file) {
         return imageService.uploadImage(file);
     }
@@ -28,7 +28,7 @@ public class ImageController {
         return imageService.getPath(Long.parseLong(id));
     }
 
-    @GetMapping("/get")
+    @GetMapping()
     ResponseEntity getImage(@RequestParam("id") Long id) {
         var da = imageService.getImage(id);
 

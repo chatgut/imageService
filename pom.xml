@@ -14,7 +14,7 @@
     <name>imageService</name>
     <description>imageService</description>
     <properties>
-        <java.version>19</java.version>
+        <java.version>20</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -78,7 +78,12 @@
             <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
-                <version>0.9.21</version>
+                <configuration>
+                    <metadataRepository>
+                        <enabled>true</enabled>
+                        <version>0.2.6</version>
+                    </metadataRepository>
+                </configuration>
                 <executions>
                     <execution>
                         <id>build-native</id>
@@ -119,7 +124,12 @@
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
-                        <version>0.9.21</version>
+                        <configuration>
+                            <metadataRepository>
+                                <enabled>true</enabled>
+                                <version>0.2.6</version>
+                            </metadataRepository>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>build-native</id>
