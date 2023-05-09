@@ -13,34 +13,43 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    jobs:
+      native-image-compile-on-host:
+        runs-on: ubuntu-latest
+        services:
+          mysql:
+            image: mysql:5.7
+            env:
+              MYSQL_ROOT_PASSWORD: secret-pw
+              MYSQL_DATABASE: images
+              MYSQL_USER: developer
+              MYSQL_PASSWORD: password
+            ports:
+              - 3306:3306
+            options: >-
+              --health-cmd="mysqladmin ping"
+              --health-interval=10s
+              --health-timeout=5s
+              --health-retries=3
+        steps:
+          - uses: actions/checkout@v2
+          - uses: graalvm/setup-graalvm@v1
+            with:
+              version: '22.3.1'
+              java-version: '19'
+              components: 'native-image'
+              github-token: ${{ secrets.GITHUB_TOKEN }}
 
-jobs:
-  native-image-compile-on-host:
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: secret-pw
-          MYSQL_DATABASE: images
-          MYSQL_USER: developer
-          MYSQL_PASSWORD: password
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-    steps:
-      - uses: actions/checkout@v2
-      - uses: graalvm/setup-graalvm@v1
-        with:
-           version: '22.3.1'
-           java-version: '19'
-           components: 'native-image'
-           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: build with Maven
-        run: mvn -B package --file pom.xml
+          - name: Install GraalVM, Maven, Native Image & Run Maven build
+            run: |
+             
+              echo 'Install Maven, that uses GraalVM for later builds'
+              source "$HOME/.sdkman/bin/sdkman-init.sh"
+              sdk install maven
     
+
+          - name: build with Maven
+            run: mvn -B package --file pom.xml
+
+
