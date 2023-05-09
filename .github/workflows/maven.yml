@@ -48,7 +48,7 @@ jobs:
         echo 'Install GraalVM with SDKMAN'
         curl -s "https://get.sdkman.io" | bash
         source "$HOME/.sdkman/bin/sdkman-init.sh"
-        sdk install java 17.r11-grl
+        sdk install java 17.0.0.r11-grl
 
         echo 'Install GraalVM Native Image'
         gu install native-image
