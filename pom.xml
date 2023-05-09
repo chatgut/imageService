@@ -14,8 +14,10 @@
     <name>imageService</name>
     <description>imageService</description>
     <properties>
-        <java.version>17</java.version>
+        <maven.compiler.release>20</maven.compiler.release>
     </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
