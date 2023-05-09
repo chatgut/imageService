@@ -42,7 +42,6 @@ public class ImageService {
         return entity.getFilePath();
     }
 
-
     private void checkIfPathExist() {
         if (Files.exists(getPath())) {
             return;
