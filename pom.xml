@@ -14,7 +14,8 @@
     <name>imageService</name>
     <description>imageService</description>
     <properties>
-        <maven.compiler.release>20</maven.compiler.release>
+        <java.version>19</java.version>
+
     </properties>
 
 
@@ -28,6 +29,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+
         </dependency>
 
 
@@ -83,7 +85,7 @@
                 <configuration>
                     <metadataRepository>
                         <enabled>true</enabled>
-                        <version>0.2.6</version>
+                        <version>0.9.21</version>
                     </metadataRepository>
                 </configuration>
                 <executions>
@@ -142,6 +144,7 @@
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
