@@ -13,8 +13,7 @@ RUN \
 
 FROM container-registry.oracle.com/os/oraclelinux:9-slim
 
-EXPOSE 8080
+EXPOSE 8001
 COPY --from=graalvm app/target/imageService /app
 
 ENTRYPOINT ["/app"]
-

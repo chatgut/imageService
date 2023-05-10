@@ -25,7 +25,7 @@ public class ImageService {
     }
 
 
-    public String uploadImage(MultipartFile file) {
+    public Long uploadImage(MultipartFile file) {
         checkIfPathExist();
         var entity = repo.save(ImageEntity.builder()
                 .name(file.getOriginalFilename())
@@ -38,8 +38,9 @@ public class ImageService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        entity.getId();
 
-        return entity.getFilePath();
+        return entity.getId();
     }
 
     private void checkIfPathExist() {
@@ -47,7 +48,7 @@ public class ImageService {
             return;
         } else {
             try {
-                Files.createDirectory(getPath());
+                Files.createDirectories(getPath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -59,12 +60,6 @@ public class ImageService {
         return Path.of(FOLDER_PATH);
     }
 
-    public String getPath(Long id) {
-        return repo.findById(id)
-                .map(ImageEntity::getFilePath)
-                .orElse(null);
-
-    }
 
     public byte[] getImage(Long id) {
 

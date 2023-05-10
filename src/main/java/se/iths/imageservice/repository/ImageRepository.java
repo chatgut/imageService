@@ -5,4 +5,5 @@ import se.iths.imageservice.entities.ImageEntity;
 
 public interface ImageRepository extends ListCrudRepository<ImageEntity, Long> {
     ImageEntity findByName(String name);
+    ImageEntity findByFilePath(String path);
 }
