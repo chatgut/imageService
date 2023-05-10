@@ -2,6 +2,7 @@ package se.iths.imageservice.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 import se.iths.imageservice.entities.ImageEntity;
 import se.iths.imageservice.repository.ImageRepository;
 
@@ -9,7 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.net.URI;
 
 @Service
 public class ImageService {
@@ -65,6 +69,15 @@ public class ImageService {
 
         return getImageAsBytes(repo.findById(id));
 
+
+    }
+
+    public byte[] getImages(String url, UriComponentsBuilder ur) {
+        URI uris = ur.path("/").build().toUri();
+        String uri = uris.toString();
+        Long id = Long.parseLong(url.substring(uri.length(), url.length()));
+
+        return getImageAsBytes(repo.findById(id));
 
     }
 

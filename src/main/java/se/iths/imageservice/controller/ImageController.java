@@ -30,9 +30,18 @@ public class ImageController {
         return uri.toString();
     }
 
+    //    @GetMapping()
+//    ResponseEntity getImage(@RequestParam("id") Long id,UriComponentsBuilder ur) {
+//        var image = imageService.getImage(id);
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .contentType(MediaType.valueOf("image/png"))
+//                .body(image);
+//
+//    }
     @GetMapping()
-    ResponseEntity getImage(@RequestParam("id") Long id) {
-        var image = imageService.getImage(id);
+    ResponseEntity getImages(@RequestParam("url") String url, UriComponentsBuilder ur) {
+        var image = imageService.getImages(url, ur);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
