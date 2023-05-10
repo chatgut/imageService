@@ -12,7 +12,7 @@ docker run --name imageDB -e MYSQL_ROOT_PASSWORD=secret-pw -e 'MYSQL_ROOT_HOST=%
 
 
 download the image and run the image:
-docker pull ghcr.io/chatgut/imageservice:main 
+docker pull ghcr.io/chatgut/imageservice
 
 ## Endpoints
 
