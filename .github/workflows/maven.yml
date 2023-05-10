@@ -26,6 +26,8 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Package with Maven
-        run: mvn -B package --file pom.xml
+      - name: Compile with Maven
+        run: mvn -B compile --file pom.xml
 
+      - name: Test with Maven
+        run: mvn -B test --file pom.xml
