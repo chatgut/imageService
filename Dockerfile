@@ -17,3 +17,4 @@ EXPOSE 8080
 COPY --from=graalvm app/target/imageService /app
 
 ENTRYPOINT ["/app"]
+
