@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import se.iths.imageservice.service.ImageService;
 
-import java.net.URI;
 
 @RestController()
 @RequestMapping("/images")
@@ -25,27 +24,21 @@ public class ImageController {
     @PostMapping()
     String uploadImage(@RequestParam("image") MultipartFile file, UriComponentsBuilder ur) {
         var id = imageService.uploadImage(file);
-        URI uri = ur.path("/" + id).build().toUri();
 
-        return uri.toString();
+        return ur.path("/" + id).build().toUri().toString();
     }
 
-    //    @GetMapping()
-//    ResponseEntity getImage(@RequestParam("id") Long id,UriComponentsBuilder ur) {
-//        var image = imageService.getImage(id);
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .contentType(MediaType.valueOf("image/png"))
-//                .body(image);
-//
-//    }
+
     @GetMapping()
     ResponseEntity getImages(@RequestParam("url") String url, UriComponentsBuilder ur) {
-        var image = imageService.getImages(url, ur);
+        var image = imageService.getImage(url, ur);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(image);
+        if (image == null)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        else
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.valueOf("image/png"))
+                    .body(image);
 
     }
 }
