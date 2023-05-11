@@ -11,6 +11,7 @@ import se.iths.imageservice.service.ImageService;
 
 @RestController()
 @RequestMapping("/images")
+@CrossOrigin(maxAge = 3600)
 public class ImageController {
 
     ImageService imageService;
