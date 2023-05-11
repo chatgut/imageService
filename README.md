@@ -52,4 +52,8 @@ Example:
 
 - output: `examplePic.png`
 
+## Responses
+
+- `200 OK` if there is a image to return
+- `404 NOT FOUND`if there is no matching image
 
