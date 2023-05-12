@@ -60,7 +60,7 @@ public class ImageService {
 
         if (image.isPresent())
             return ResponseEntity.status(HttpStatus.OK)
-                    .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+                    .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
                     .contentType(MediaType.valueOf(image.get().getType()))
                     .body(getImageAsBytes(image.get()));
         else
