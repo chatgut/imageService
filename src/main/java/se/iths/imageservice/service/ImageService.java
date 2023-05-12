@@ -1,5 +1,9 @@
 package se.iths.imageservice.service;
 
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -11,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ImageService {
@@ -50,15 +54,21 @@ public class ImageService {
         }
     }
 
-    public byte[] getImage(String url, UriComponentsBuilder urlComp) {
-        var uri = urlComp.path("/").build().toUri().toString();
-        var id = Long.parseLong(url.substring(uri.length()));
 
-        return repo.findById(id).map(this::getImageAsBytes).orElse(null);
+    public ResponseEntity getImg(Long id) {
+        var image = repo.findById(id);
+
+        if (image.isPresent())
+            return ResponseEntity.status(HttpStatus.OK)
+                    .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+                    .contentType(MediaType.valueOf(image.get().getType()))
+                    .body(getImageAsBytes(image.get()));
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
     private byte[] getImageAsBytes(ImageEntity file) {
         return this.fileWrapper.readBytes(Path.of(file.getFilePath()));
     }
-
 }
