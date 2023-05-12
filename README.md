@@ -12,7 +12,7 @@ docker run --name imageDB -e MYSQL_ROOT_PASSWORD=secret-pw -e 'MYSQL_ROOT_HOST=%
 
 
 download the image and run the image:
-docker pull ghcr.io/chatgut/imageservice
+docker pull ghcr.io/chatgut/imageservice:main
 
 ## Endpoints
 
@@ -34,7 +34,7 @@ Example:
 
 - input: `image - examplePic.png`
 
-- output: `http://localhost:8001/1`
+- output: `http://localhost:8001/images/1`
 - url is auto generated, if running with a gateway, output would looks something like `http://foo:8080/images/1`
 
 
@@ -42,18 +42,18 @@ Example:
 
 
 Request Parameters:
-- `url - http://localhost:8001/1`
+- `url - http://localhost:8001/images/1`
 
 returns the image. Currently content-Type is image/png
 
 Example:
 
-- input: `http://localhost:8001/1`
+- input: `http://localhost:8001/images/1`
 
 - output: `examplePic.png`
 
-## Responses
-
+# Responses
+#### `GET localhost:8080/images/{id}`
 - `200 OK` if there is a image to return
 - `404 NOT FOUND`if there is no matching image
 
