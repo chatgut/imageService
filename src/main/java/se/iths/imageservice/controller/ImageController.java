@@ -22,10 +22,11 @@ public class ImageController {
 
 
     @PostMapping()
-    String uploadImage(@RequestParam("image") MultipartFile file, UriComponentsBuilder ur) {
-        var id = imageService.uploadImage(file);
-
-        return ur.path("/images/" + id).build().toUri().toString();
+    String uploadImage(@RequestParam("image") MultipartFile image, UriComponentsBuilder ur) {
+        return ur.path("/images/" + imageService.uploadImage(image))
+                .build()
+                .toUri()
+                .toString();
     }
 
 
