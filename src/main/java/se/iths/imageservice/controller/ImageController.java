@@ -14,7 +14,6 @@ public class ImageController {
 
     ImageService imageService;
 
-    //TODO handle exceptions
     public ImageController(ImageService imageService) {
         this.imageService = imageService;
     }
@@ -32,6 +31,11 @@ public class ImageController {
     @GetMapping("/{id}")
     ResponseEntity getImages(@PathVariable Long id) {
         return imageService.getImg(id);
+    }
+
+    @GetMapping("/thumbnail/{id}")
+    ResponseEntity getThumbnail(@PathVariable Long id,@RequestParam("height") int height, @RequestParam("width") int width){
+        return imageService.getThumbnail(id, height, width);
     }
 }
 
