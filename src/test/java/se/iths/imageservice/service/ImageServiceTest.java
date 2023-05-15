@@ -67,9 +67,10 @@ class ImageServiceTest {
     }
 
     @Test
+
     void returnsCorrectImageByteCodeWhenCalled() {
         var filePath = "/path/to/mockImage.jpeg";
-        var entity = new ImageEntity(1L, "mockImage.jpeg", filePath, CONTENT_TYPE);
+        var entity = new ImageEntity(1L, "mockImage.jpeg", filePath, CONTENT_TYPE,"");
         var expectedResponse = ResponseEntity.status(HttpStatus.OK)
                 .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
                 .contentType(MediaType.valueOf(CONTENT_TYPE))
