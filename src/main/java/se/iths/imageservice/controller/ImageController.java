@@ -7,7 +7,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import se.iths.imageservice.service.ImageService;
 
 
-
 @RestController()
 @RequestMapping("/images")
 @CrossOrigin(maxAge = 3600)

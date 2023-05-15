@@ -10,14 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 import se.iths.imageservice.entities.ImageEntity;
 import se.iths.imageservice.mapper.FileWrapper;
 import se.iths.imageservice.repository.ImageRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -69,13 +67,13 @@ class ImageServiceTest {
     }
 
     @Test
-    void returnsCorrectImageByteCodeWhenCalled(){
+    void returnsCorrectImageByteCodeWhenCalled() {
         var filePath = "/path/to/mockImage.jpeg";
         var entity = new ImageEntity(1L, "mockImage.jpeg", filePath, CONTENT_TYPE);
         var expectedResponse = ResponseEntity.status(HttpStatus.OK)
-                               .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
-                                .contentType(MediaType.valueOf(CONTENT_TYPE))
-                                .body(filePath.getBytes());
+                .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
+                .contentType(MediaType.valueOf(CONTENT_TYPE))
+                .body(filePath.getBytes());
 
         when(repo.findById(anyLong())).thenReturn(Optional.of(entity));
         when(fileWrapper.readBytes(Path.of(entity.getFilePath()))).thenReturn(filePath.getBytes());

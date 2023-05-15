@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 import se.iths.imageservice.entities.ImageEntity;
 import se.iths.imageservice.mapper.FileWrapper;
 import se.iths.imageservice.repository.ImageRepository;
@@ -14,7 +13,6 @@ import se.iths.imageservice.repository.ImageRepository;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
