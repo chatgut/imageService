@@ -87,4 +87,5 @@ class ImageServiceTest {
         assertThat(result).isEqualTo(expectedResponse);
 
     }
+
 }
