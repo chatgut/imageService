@@ -34,8 +34,8 @@ public class ImageController {
     }
 
     @GetMapping("/thumbnail/{id}")
-    ResponseEntity getThumbnail(@PathVariable Long id){
-        return imageService.getThumbnail(id);
+    ResponseEntity getThumbnail(@PathVariable Long id,@RequestParam("height") int height, @RequestParam("width") int width){
+        return imageService.getThumbnail(id, height, width);
     }
 }
 

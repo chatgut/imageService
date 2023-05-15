@@ -13,13 +13,11 @@ import se.iths.imageservice.repository.ImageRepository;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.FormatFlagsConversionMismatchException;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -80,36 +78,61 @@ public class ImageService {
         return this.fileWrapper.readBytes(Path.of(file.getThumbnail()));
     }
 
-    public ResponseEntity getThumbnail(Long id) {
-        var i = repo.findById(id);
-        var image = i.get();
-        if (image.getThumbnail() == null) {
+    public ResponseEntity getThumbnail(Long id, int height, int width) {
+        var optionalImage = repo.findById(id);
 
-            try {
-               if(!Files.exists(Path.of(FOLDER_PATH + "thumbnails")))
-                   Files.createDirectory(Path.of(FOLDER_PATH + "thumbnails"));
+        if (optionalImage.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-               BufferedImage img = ImageIO.read(new File(image.getFilePath()));
-                var s = resizeImage(img, 50, 50);
+        var image = optionalImage.get();
 
-                String thumbnailPath = FOLDER_PATH + "thumbnails/" + image.getName();
-                Files.write(Path.of(thumbnailPath), s);
-                image.setThumbnail(thumbnailPath);
-                repo.save(image);
-
-                return ResponseEntity.status(HttpStatus.OK)
-                        .contentType(MediaType.valueOf(image.getType()))
-                        .body(s);
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-        } else {
+        if (image.getThumbnail() == null)
+            return getThumbnailResponse(image, height, width);
+        else
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.valueOf(image.getType()))
                     .body(getThumbnailAsBytes(image));
+
+    }
+
+    private ResponseEntity<byte[]> getThumbnailResponse(ImageEntity image, int height, int width) {
+        try {
+            var thumbnail = createAndReturnThumbnail(image, height, width);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.valueOf(image.getType()))
+                    .body(thumbnail);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    private byte[] createAndReturnThumbnail(ImageEntity image, int height, int width) throws Exception {
+        createThumbnailDirectoryIfNotExists();
+
+        var thumbnail = convertToThumbnail(image, height, width);
+        var thumbnailPath = FOLDER_PATH + "thumbnails/" + image.getName();
+
+        Files.write(Path.of(thumbnailPath), thumbnail);
+        savePathToEntity(image, thumbnailPath);
+        return thumbnail;
+    }
+
+    private void savePathToEntity(ImageEntity image, String thumbnailPath) {
+        image.setThumbnail(thumbnailPath);
+        repo.save(image);
+    }
+
+    private byte[] convertToThumbnail(ImageEntity image, int height, int width) throws Exception {
+        var img = ImageIO.read(new File(image.getFilePath()));
+        return resizeImage(img, width, height);
+    }
+
+    private static void createThumbnailDirectoryIfNotExists() throws IOException {
+        var pathToThumbnails = Path.of(FOLDER_PATH + "thumbnails");
+        if (!Files.exists(pathToThumbnails))
+            Files.createDirectory(pathToThumbnails);
     }
 
     byte[] resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) throws Exception {
@@ -119,8 +142,6 @@ public class ImageService {
                 .outputFormat("JPEG")
                 .outputQuality(1)
                 .toOutputStream(outputStream);
-        byte[] data = outputStream.toByteArray();
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-        return data;
+        return outputStream.toByteArray();
     }
 }
