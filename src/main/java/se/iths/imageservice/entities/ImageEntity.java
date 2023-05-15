@@ -17,6 +17,7 @@ public class ImageEntity {
     private String name;
     private String filePath;
     private String type;
+    private String thumbnail;
 
     @Override
     public String toString() {
