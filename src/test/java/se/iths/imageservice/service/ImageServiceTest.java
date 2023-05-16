@@ -30,7 +30,7 @@ class ImageServiceTest {
 
 
     private static final String HOME_FOLDER = System.getProperty("user.home");
-    private static final String IMAGE_FOLDER = "/var/lib/mysql/";
+    private static final String IMAGE_FOLDER = "/var/lib/images/";
     private static final String FOLDER_PATH = HOME_FOLDER + IMAGE_FOLDER;
     public static final String CONTENT_TYPE = "image/jpeg";
     @Autowired

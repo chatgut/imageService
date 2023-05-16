@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class ImageService {
     private static final String HOME_FOLDER = System.getProperty("user.home");
-    private static final String IMAGE_FOLDER = "/var/lib/mysql/";
+    private static final String IMAGE_FOLDER = "/var/lib/images/";
     private static final String FOLDER_PATH = HOME_FOLDER + IMAGE_FOLDER;
 
     ImageRepository repo;
@@ -32,6 +32,7 @@ public class ImageService {
     public ImageService(ImageRepository repo, FileWrapper fileWrapper) {
         this.repo = repo;
         this.fileWrapper = fileWrapper;
+        checkIfPathExist();
     }
 
     public Long uploadImage(MultipartFile file) {
@@ -39,6 +40,20 @@ public class ImageService {
         saveFileToSystem(file);
 
         return entity.getId();
+    }
+    private void checkIfPathExist() {
+        if (Files.exists(getPath())) {
+            return;
+        } else {
+            try {
+                Files.createDirectories(getPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    private static Path getPath() {
+        return Path.of(FOLDER_PATH);
     }
 
     private ImageEntity saveEntity(MultipartFile file) {
