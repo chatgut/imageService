@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.multipart.MultipartFile;
+import se.iths.imageservice.config.ApplicationDto;
 import se.iths.imageservice.entities.ImageEntity;
 import se.iths.imageservice.mapper.FileWrapper;
 import se.iths.imageservice.repository.ImageRepository;
@@ -29,9 +30,7 @@ import static org.mockito.Mockito.*;
 class ImageServiceTest {
 
 
-    private static final String HOME_FOLDER = System.getProperty("user.home");
     private static final String IMAGE_FOLDER = "/var/lib/images/";
-    private static final String FOLDER_PATH = HOME_FOLDER + IMAGE_FOLDER;
     public static final String CONTENT_TYPE = "image/jpeg";
     @Autowired
     ImageService service;
@@ -39,14 +38,17 @@ class ImageServiceTest {
     ImageRepository repo;
     @MockBean
     FileWrapper fileWrapper;
+    @MockBean
+    ApplicationDto dto;
 
     MultipartFile file = mock(MultipartFile.class);
 
     @Test
     void uploadingANewImageShouldReturnCorrectAGeneratedID() throws IOException {
-        var imageName = "mockImage.jpeg";
+        var imageName = "/mockImage.jpeg";
+        var folderPath = dto.getMode() + IMAGE_FOLDER;
 
-        var pathToImage = new File(FOLDER_PATH + imageName);
+        var pathToImage = new File(folderPath + imageName);
         var entity = ImageEntity.builder()
                 .id(1L)
                 .name(imageName)
@@ -67,10 +69,9 @@ class ImageServiceTest {
     }
 
     @Test
-
     void returnsCorrectImageByteCodeWhenCalled() {
         var filePath = "/path/to/mockImage.jpeg";
-        var entity = new ImageEntity(1L, "mockImage.jpeg", filePath, CONTENT_TYPE,"");
+        var entity = new ImageEntity(1L, "mockImage.jpeg", filePath, CONTENT_TYPE, "");
         var expectedResponse = ResponseEntity.status(HttpStatus.OK)
                 .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
                 .contentType(MediaType.valueOf(CONTENT_TYPE))

@@ -1,12 +1,14 @@
 package se.iths.imageservice.service;
 
 import net.coobird.thumbnailator.Thumbnails;
+
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import se.iths.imageservice.config.ApplicationDto;
 import se.iths.imageservice.entities.ImageEntity;
 import se.iths.imageservice.mapper.FileWrapper;
 import se.iths.imageservice.repository.ImageRepository;
@@ -22,17 +24,20 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class ImageService {
-    private static final String HOME_FOLDER = System.getProperty("user.home");
-    private static final String IMAGE_FOLDER = "/var/lib/images/";
-    private static final String FOLDER_PATH = HOME_FOLDER + IMAGE_FOLDER;
-
     ImageRepository repo;
     FileWrapper fileWrapper;
+    ApplicationDto dto;
 
-    public ImageService(ImageRepository repo, FileWrapper fileWrapper) {
+    public ImageService(ImageRepository repo, FileWrapper fileWrapper, ApplicationDto dto) {
         this.repo = repo;
         this.fileWrapper = fileWrapper;
-        checkIfPathExist();
+        this.dto = dto;
+        checkIfPathExists();
+    }
+
+    private void checkIfPathExists() {
+        if (!Files.exists(getPath()))
+            createDirectory();
     }
 
     public Long uploadImage(MultipartFile file) {
@@ -41,32 +46,35 @@ public class ImageService {
 
         return entity.getId();
     }
-    private void checkIfPathExist() {
-        if (Files.exists(getPath())) {
-            return;
-        } else {
-            try {
-                Files.createDirectories(getPath());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+
+    private void createDirectory() {
+        try {
+            Files.createDirectories(getPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
     }
-    private static Path getPath() {
-        return Path.of(FOLDER_PATH);
+
+    private Path getPath() {
+        return Path.of(dto.getMode() + "/var/lib/images");
     }
 
     private ImageEntity saveEntity(MultipartFile file) {
         return repo.save(ImageEntity.builder()
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
-                .filePath(FOLDER_PATH + file.getOriginalFilename())
+                .filePath(getFilePath(file))
                 .build());
     }
 
-    private static void saveFileToSystem(MultipartFile file) {
+    private String getFilePath(MultipartFile file) {
+        return getPath() + "/" + file.getOriginalFilename();
+    }
+
+    private void saveFileToSystem(MultipartFile file) {
         try {
-            file.transferTo(new File(FOLDER_PATH + file.getOriginalFilename()));
+            file.transferTo(new File(getFilePath(file)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -127,7 +135,7 @@ public class ImageService {
         createThumbnailDirectoryIfNotExists();
 
         var thumbnail = convertToThumbnail(image, height, width);
-        var thumbnailPath = FOLDER_PATH + "thumbnails/" + image.getName();
+        var thumbnailPath = getPath() + "/thumbnails/" + image.getName();
 
         Files.write(Path.of(thumbnailPath), thumbnail);
         savePathToEntity(image, thumbnailPath);
@@ -144,8 +152,8 @@ public class ImageService {
         return resizeImage(img, width, height);
     }
 
-    private static void createThumbnailDirectoryIfNotExists() throws IOException {
-        var pathToThumbnails = Path.of(FOLDER_PATH + "thumbnails");
+    private void createThumbnailDirectoryIfNotExists() throws IOException {
+        var pathToThumbnails = Path.of(getPath() + "/thumbnails");
         if (!Files.exists(pathToThumbnails))
             Files.createDirectory(pathToThumbnails);
     }
